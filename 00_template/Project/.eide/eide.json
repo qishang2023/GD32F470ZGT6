@@ -37,6 +37,9 @@
           },
           {
             "path": "../Firmware/GD32F4xx_standard_peripheral/Source/gd32f4xx_rcu.c"
+          },
+          {
+            "path": "../Firmware/GD32F4xx_standard_peripheral/Source/gd32f4xx_timer.c"
           }
         ],
         "folders": []
@@ -44,7 +47,20 @@
       {
         "name": "Hardware",
         "files": [],
-        "folders": []
+        "folders": [
+          {
+            "name": "OLED",
+            "files": [
+              {
+                "path": "../Hardware/OLED/lcd_init.c"
+              },
+              {
+                "path": "../Hardware/OLED/lcd.c"
+              }
+            ],
+            "folders": []
+          }
+        ]
       },
       {
         "name": "User",
@@ -152,7 +168,8 @@
           "../Firmware/CMSIS",
           ".cmsis/include",
           "RTE/_Target 1",
-          ".eide/deps"
+          ".eide/deps",
+          "../Hardware/OLED"
         ],
         "libList": [],
         "sourceDirList": [],

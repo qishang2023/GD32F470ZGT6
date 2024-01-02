@@ -41,3 +41,5 @@
 .\objects\main.o: ..\User\systick.h
 .\objects\main.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 .\objects\main.o: ..\User\main.h
+.\objects\main.o: ..\Hardware\OLED\lcd.h
+.\objects\main.o: ..\Hardware\OLED\lcd_init.h

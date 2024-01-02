@@ -5,6 +5,7 @@
 #include "lcd.h"
 #include "lcd_init.h"
 #include "pic.h"
+#include "bsp_DHT11.h"
 
 /**
 LED硬件对应关系
@@ -36,34 +37,30 @@ static void GPIO_config()
 
 int main(void)
 {
-	u8 i;
-	float t=0.0;
-	u8 j;
+	u8 humidity = 0,ret = 0;
+	float temperature = 0;
+	u8 str[30],dat[5];
 	// 系统时钟初始化
 	systick_config();
 	// IO引脚初始化
 	// GPIO_config();
 	LCD_Init(); // LCD初始化
 	LCD_Fill(0, 0, LCD_W, LCD_H, WHITE);
-
+	DHT11_init();
 	while (1)
 	{
-		LCD_ShowChinese(0, 0, "中景园电子", RED, WHITE, 32, 0);
-		LCD_ShowString(0, 40, "LCD_W:", RED, WHITE, 16, 0);
-		LCD_ShowIntNum(48, 40, LCD_W, 3, RED, WHITE, 16);
-		LCD_ShowString(80, 40, "LCD_H:", RED, WHITE, 16, 0);
-		LCD_ShowIntNum(128, 40, LCD_H, 3, RED, WHITE, 16);
-		LCD_ShowString(80, 40, "LCD_H:", RED, WHITE, 16, 0);
-		LCD_ShowString(0, 70, "Increaseing Nun:", RED, WHITE, 16, 0);
-		LCD_ShowFloatNum1(128, 70, t, 4, RED, WHITE, 16);
-		t += 0.11;
-		for (j = 0; j < 3; j++)
-		{
-			for (i = 0; i < 6; i++)
-			{
-				LCD_ShowPicture(40 * i, 120 + j * 40, 40, 40, gImage_1);
-			}
-		}
+		// ret = DHT11_read_data(dat);
+		ret = DHT11_get_temperature(&humidity,&temperature);
+		sprintf(str, "H:%d%% T:%.1fC,", (int)humidity, temperature);
+		// sprintf(str,"ret = %d",ret);
+		// LCD_ShowString(10, 40, str, RED, WHITE, 24, 0);
+		// sprintf(str, "0=%d,1=%d,2=%d,", (int)dat[0], (int)dat[1], (int)dat[2]);
+		// LCD_ShowString(10, 70, str, RED, WHITE, 24, 0);
+		// sprintf(str, "3=%d,4=%d", (int)dat[3], (int)dat[4]);
+		LCD_ShowString(10, 100, str, RED, WHITE, 24, 0);
+		sprintf(str,"ret = %d",(int)ret);
+		LCD_ShowString(10, 70, str, RED, WHITE, 24, 0);
+		delay_1ms(1000);
 		// gpio_bit_set(GPIOE, GPIO_PIN_3);
 		// delay_1ms(200);
 		// gpio_bit_reset(GPIOE, GPIO_PIN_3);

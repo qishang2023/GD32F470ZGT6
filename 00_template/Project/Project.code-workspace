@@ -19,7 +19,8 @@
             "*.c++": "cpp",
             "*.cpp": "cpp",
             "*.cxx": "cpp",
-            "*.cc": "cpp"
+            "*.cc": "cpp",
+            "bsp_DHT11.C": "cpp"
         },
         "[yaml]": {
             "editor.insertSpaces": true,

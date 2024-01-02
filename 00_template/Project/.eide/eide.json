@@ -46,7 +46,11 @@
       },
       {
         "name": "Hardware",
-        "files": [],
+        "files": [
+          {
+            "path": "../Hardware/bsp_DHT11.c"
+          }
+        ],
         "folders": [
           {
             "name": "OLED",
@@ -169,7 +173,8 @@
           ".cmsis/include",
           "RTE/_Target 1",
           ".eide/deps",
-          "../Hardware/OLED"
+          "../Hardware/OLED",
+          "../Hardware"
         ],
         "libList": [],
         "sourceDirList": [],

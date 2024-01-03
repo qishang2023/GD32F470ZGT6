@@ -4,8 +4,9 @@
 
 #include "bsp_RTC.h"
 
+RTC_clock rtc_clock;
 
- void RTC_config() {
+void RTC_config() {
     // 电池管理加载
     rcu_periph_clock_enable(RCU_PMU);
     pmu_backup_write_enable();
@@ -33,17 +34,32 @@
     rtc_init(&rps);
 }
 
- void RTC_read() {
+void RTC_set_time(){
     rtc_parameter_struct rps;
-    uint8_t buf[30] = {0};
     rtc_current_time_get(&rps);
+    uint8_t year = rtc_clock.year - 2000;
+    rps.year = WRITE_BCD(year);
+    rps.month = WRITE_BCD(rtc_clock.month);
+    rps.date = WRITE_BCD(rtc_clock.day);
+    rps.day_of_week = WRITE_BCD(rtc_clock.week);
+    rps.hour = WRITE_BCD(rtc_clock.hour);
+    rps.minute = WRITE_BCD(rtc_clock.minute);
+    rps.second = WRITE_BCD(rtc_clock.second);
+    rps.display_format = RTC_24HOUR;
+    rps.am_pm = RTC_AM;
+    rps.factor_asyn = 0x7F;
+    rps.factor_syn = 0xFF;
+    rtc_init(&rps);
+}
 
-    uint16_t year = READ_BCD(rps.year) + 2000;
-    uint8_t month = READ_BCD(rps.month);
-    uint8_t date = READ_BCD(rps.date);
-    uint8_t hour = READ_BCD(rps.hour);
-    uint8_t minute = READ_BCD(rps.minute);
-    uint8_t second = READ_BCD(rps.second);
-    sprintf(buf,"%d-%d-%d %02d:%02d:%02d", year, month, date, hour, minute, second);
-    LCD_ShowString(10, 130, buf, BLACK, WHITE, 16,0);
+void RTC_read() {
+    rtc_parameter_struct rps;
+    rtc_current_time_get(&rps);
+    rtc_clock.year = READ_BCD(rps.year) + 2000;
+    rtc_clock.month = READ_BCD(rps.month);
+    rtc_clock.day = READ_BCD(rps.date);
+    rtc_clock.hour = READ_BCD(rps.hour);
+    rtc_clock.minute = READ_BCD(rps.minute);
+    rtc_clock.second = READ_BCD(rps.second);
+    rtc_clock.week = READ_BCD(rps.day_of_week);
 }

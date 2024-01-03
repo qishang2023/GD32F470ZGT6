@@ -7,13 +7,8 @@
 #include "pic.h"
 #include "bsp_DHT11.h"
 #include "bsp_RTC.h"
+#include "bsp_USART.h"
 
-void keys_config(void){
-    //1.打开时钟
-    rcu_periph_clock_enable(RCU_GPIOD);
-    //2.配置GPIO模式
-    gpio_mode_set(GPIOD,GPIO_MODE_INPUT,GPIO_PUPD_PULLUP,GPIO_PIN_0|GPIO_PIN_1);
-}
 
 int main(void) {
     u8 humidity = 0, ret = 0;
@@ -22,10 +17,7 @@ int main(void) {
     // 系统时钟初始化
     systick_config();
     RTC_config();
-//    keys_config();
-//    leds_config();
-    // IO引脚初始化
-//	 GPIO_config();
+    USART_config();
     LCD_Init(); // LCD初始化
     LCD_Fill(0, 0, LCD_W, LCD_H, WHITE);
     DHT11_init();
@@ -38,6 +30,7 @@ int main(void) {
     rtc_clock.second = 0;
     RTC_set_time();
     while (1) {
+        send_string("Hello World!\r\n");
         RTC_read();
         sprintf(str, "%d-%d-%d %02d:%02d:%02d", rtc_clock.year, rtc_clock.month, rtc_clock.day,
                 rtc_clock.hour, rtc_clock.minute, rtc_clock.second);

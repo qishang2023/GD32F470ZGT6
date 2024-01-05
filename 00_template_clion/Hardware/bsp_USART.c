@@ -96,7 +96,7 @@ void USART_config() {
 void USART1_IRQHandler(void) {
     if ((usart_interrupt_flag_get(USART0, USART_INT_FLAG_RBNE)) == SET) {
         uint16_t value = usart_data_receive(USART0);
-        g_recv_buff[g_recv_length] = value;
+        g_recv_buff[g_recv_length] = (uint8_t)value;
         g_recv_length++;
     }
     if (usart_interrupt_flag_get(USART0, USART_INT_FLAG_IDLE) == SET) {

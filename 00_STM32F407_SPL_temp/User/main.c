@@ -20,46 +20,20 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "bsp_usart1.h"
 
+void recv_data_callback(uint8_t buffer[],int16_t length){
+    buffer[length] = '\0';
+    send_string(buffer);
+}
 
-int main(void)
-{
-  GPIO_InitTypeDef GPIO_InitStructure;
-
-  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
-  
-  /* Configure MCO1 pin(PA8) in alternate function */
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;  
-  GPIO_Init(GPIOA, &GPIO_InitStructure);
-    
-  /* HSE clock selected to output on MCO1 pin(PA8)*/
-  RCC_MCO1Config(RCC_MCO1Source_HSE, RCC_MCO1Div_1);
-  
-  
-  /* Output SYSCLK/4 clock on MCO2 pin(PC9) ***********************************/ 
-  /* Enable the GPIOACperipheral */ 
-  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
-  
-  /* Configure MCO2 pin(PC9) in alternate function */
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;  
-  GPIO_Init(GPIOC, &GPIO_InitStructure);
-    
-  /* SYSCLK/4 clock selected to output on MCO2 pin(PC9)*/
-  RCC_MCO2Config(RCC_MCO2Source_SYSCLK, RCC_MCO2Div_4);
-  
-     
-  /* Infinite loop */
-  while (1)
-  {
-  }
+int main(void) {
+    systick_config();
+    usart1_rx_tx_config(115200);
+    /* Infinite loop */
+    while (1) {
+        delay_1ms(1000);
+    }
 }
 
 

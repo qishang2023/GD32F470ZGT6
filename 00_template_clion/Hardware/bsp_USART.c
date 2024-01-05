@@ -28,7 +28,7 @@ void send_string(char *data) {
     }
 }
 
-int fputc(int ch, FILE *f) {
+int __io_putchar(int ch) {
     send_data((uint8_t) ch);
     return ch;
 }

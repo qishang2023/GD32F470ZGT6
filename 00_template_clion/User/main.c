@@ -1,6 +1,3 @@
-#include "gd32f4xx.h"
-#include "systick.h"
-#include <stdio.h>
 #include "main.h"
 #include "lcd.h"
 #include "lcd_init.h"
@@ -30,7 +27,6 @@ int main(void) {
     rtc_clock.second = 0;
     RTC_set_time();
     while (1) {
-        send_string("Hello World!\r\n");
         RTC_read();
         sprintf(str, "%d-%d-%d %02d:%02d:%02d", rtc_clock.year, rtc_clock.month, rtc_clock.day,
                 rtc_clock.hour, rtc_clock.minute, rtc_clock.second);

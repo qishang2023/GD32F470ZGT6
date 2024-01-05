@@ -68,7 +68,7 @@ void USART_config() {
 
     /************** usart config **************/
     // ´®¿ÚÊ±ÖÓ
-    rcu_periph_clock_enable(RCU_USART0);
+    rcu_periph_clock_enable(usartx_rcu);
     // USART¸´Î»
     usart_deinit(usartx);
 

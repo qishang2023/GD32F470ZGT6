@@ -5,7 +5,6 @@
 #ifndef INC_00_STM32F407_SPL_TEMP_BSP_DHT11_H
 #define INC_00_STM32F407_SPL_TEMP_BSP_DHT11_H
 #include "systick.h"
-
 #define u8 uint8_t
 #define u16 uint16_t
 #define u32 uint32_t

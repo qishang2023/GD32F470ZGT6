@@ -1,11 +1,10 @@
-#include "main.h"
 #include "lcd.h"
 #include "lcd_init.h"
-#include "pic.h"
 #include "bsp_DHT11.h"
 #include "bsp_RTC.h"
 #include "bsp_USART.h"
-
+#include "bsp_key.h"
+#include "bsp_timer.h"
 
 int main(void) {
     u8 humidity = 0, ret = 0;
@@ -15,9 +14,10 @@ int main(void) {
     systick_config();
     RTC_config();
     USART_config();
+    EXTI_config();
+    bsp_timer_init();
     LCD_Init(); // LCD≥ı ºªØ
     LCD_Fill(0, 0, LCD_W, LCD_H, WHITE);
-    DHT11_init();
     rtc_clock.year = 2023;
     rtc_clock.month = 12;
     rtc_clock.day = 2;
@@ -26,6 +26,8 @@ int main(void) {
     rtc_clock.minute = 48;
     rtc_clock.second = 0;
     RTC_set_time();
+    DHT11_init();
+    printf("start...\n");
     while (1) {
         RTC_read();
         sprintf(str, "%d-%d-%d %02d:%02d:%02d", rtc_clock.year, rtc_clock.month, rtc_clock.day,

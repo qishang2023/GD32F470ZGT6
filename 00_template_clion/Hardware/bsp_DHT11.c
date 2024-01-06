@@ -70,7 +70,12 @@ u8 DHT11_read_data(u8* dat) {
 	}
 	return 0;
 }
-
+/**
+ * @brief 温度读取转换函数
+ * @param humidity
+ * @param temperature
+ * @return
+ */
 u8 DHT11_get_temperature(u8 *humidity, float *temperature) {
 	u8 dat[5]={0};
 	u8 ret;

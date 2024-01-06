@@ -103,9 +103,7 @@ void USART1_IRQHandler(void) {
         //读取缓冲区,清空缓冲区
         usart_data_receive(USART0);
         g_recv_buff[g_recv_length] = '\0';
-
-        // g_recv_buff为接收的数据，g_recv_length为接收的长度
-        send_string(g_recv_buff);
+        printf("%s\n",g_recv_buff);
         g_recv_length = 0;
     }
 }

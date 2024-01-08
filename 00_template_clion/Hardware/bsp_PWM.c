@@ -26,7 +26,7 @@ void PWM_config() {
     // 复位定时器
     timer_deinit(TIMER1); // 重置定时器外设（类似重启系统）
     // 倍频配置
-    rcu_timer_clock_prescaler_config(RCU_TIMER_PSC_MUL2);
+    rcu_timer_clock_prescaler_config(RCU_TIMER_PSC_MUL4);
 
     // 初始化定时器
     timer_parameter_struct tps;

@@ -15,7 +15,7 @@ int main(void) {
     RTC_config();
     USART_config();
     EXTI_config();
-    bsp_timer_init();
+    bsp_timer5_init();
     LCD_Init(); // LCD≥ı ºªØ
     LCD_Fill(0, 0, LCD_W, LCD_H, WHITE);
     rtc_clock.year = 2023;

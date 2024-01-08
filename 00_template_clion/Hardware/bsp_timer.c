@@ -4,8 +4,10 @@
 
 #include "bsp_timer.h"
 #include "stdio.h"
-
-void bsp_timer_init(){
+/**
+ * @brief 初始化基本定时器5
+ */
+void bsp_timer5_init(){
     // 时钟配置
     rcu_periph_clock_enable(RCU_TIMER5);
 
@@ -23,7 +25,9 @@ void bsp_timer_init(){
     nvic_irq_enable(TIMER5_DAC_IRQn, 2, 2);
     timer_interrupt_enable(TIMER5, TIMER_INT_UP);
 }
-
+/**
+ * @brief 定时器5中断服务函数
+ */
 void TIMER5_DAC_IRQHandler(){
     // 清除中断标志位
     static uint32_t cnt;

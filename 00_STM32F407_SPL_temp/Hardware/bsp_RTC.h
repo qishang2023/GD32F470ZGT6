@@ -22,7 +22,7 @@ typedef struct{
 extern RTC_clock rtc_clock;
 
 void RTC_config();
-void RTC_read();
+void RTC_read_time();
 void RTC_set_time();
 
 #endif //INC_00_TEMPLATE_CLION_BSP_RTC_H

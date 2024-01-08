@@ -36,7 +36,7 @@ void bsp_BUZZER_config() {
     tps.prescaler = PRESCALER;
     tps.alignedmode = TIMER_COUNTER_EDGE;
     tps.counterdirection = TIMER_COUNTER_UP;
-    tps.period = PERIOD(500);
+    tps.period = 0;
     tps.clockdivision = TIMER_CKDIV_DIV1;
     tps.repetitioncounter = 0U;
     timer_init(TIMER2, &tps);
@@ -56,13 +56,13 @@ void bsp_BUZZER_config() {
     //  ‰≥ˆƒ£ Ω≈‰÷√
     timer_channel_output_mode_config(TIMER2, TIMER_CH_2, TIMER_OC_MODE_PWM0);
     timer_channel_output_pulse_value_config(TIMER2, TIMER_CH_2, 0);
+    timer_enable(TIMER2);
 }
 
 void bsp_BUZZER_play(uint8_t pos){
     uint32_t period = (uint32_t)PERIOD(FREQS[pos]);
     timer_channel_output_pulse_value_config(TIMER2, TIMER_CH_2, period/20);
     timer_autoreload_value_config(TIMER2, period);
-    timer_enable(TIMER2);
 }
 
 void bsp_BUZZER_stop(){
@@ -77,6 +77,6 @@ void bsp_BUZZER_music(){
         bsp_BUZZER_play(notes[i]);
         d = durations[i] * 100;
         while(d--) delay_1ms(1);
-        bsp_BUZZER_stop();
     }
+    bsp_BUZZER_stop();
 }

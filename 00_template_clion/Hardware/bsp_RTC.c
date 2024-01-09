@@ -9,7 +9,7 @@ RTC_clock rtc_clock;
 void RTC_config() {
     // 电池管理加载
     rcu_periph_clock_enable(RCU_PMU);
-    pmu_backup_write_enable();
+    pmu_backup_write_enable();// 允许对备份域寄存器的写访问
     // 晶振加载
     rcu_osci_on(RCU_LXTAL);
     rcu_osci_stab_wait(RCU_LXTAL);

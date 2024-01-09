@@ -5,9 +5,11 @@
 #include "bsp_USART.h"
 #include "bsp_key.h"
 #include "bsp_timer.h"
+#include "bsp_BUZZER.h"
 
 int main(void) {
     u8 humidity = 0, ret = 0;
+    int j = 1;
     float temperature = 0;
     u8 str[30];
     // 系统时钟初始化
@@ -27,6 +29,7 @@ int main(void) {
     rtc_clock.second = 0;
     RTC_set_time();
     DHT11_init();
+    send_data('a');
     printf("start...\n");
     while (1) {
         RTC_read();

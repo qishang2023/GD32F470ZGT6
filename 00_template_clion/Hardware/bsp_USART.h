@@ -12,4 +12,5 @@
 
 void USART_config();
 void send_string(char *data);
+void send_data(uint8_t data);
 #endif //INC_00_TEMPLATE_CLION_BSP_USART_H

@@ -10,9 +10,36 @@ uint8_t g_recv_buff[USART_RECEIVE_LENGTH];   // 接收缓冲区
 
 uint8_t dat = 0;
 //接收到字符存放的位置
-int g_recv_length = 0;
-
-static void usart0_dma_config() {
+//int g_recv_length = 0;
+static void usart0_dma_rx_config(){
+    //1.打开dma时钟
+    rcu_periph_clock_enable(RCU_DMA1);
+    //2.重置
+    dma_deinit(DMA1,DMA_CH2);
+    //3.初始化dma
+    //DMA属性
+    dma_single_data_parameter_struct init_struct;
+    dma_single_data_para_struct_init(&init_struct);
+    /**************** 这些属性可以不用配置 *****************/
+    //循环模式
+    init_struct.circular_mode       = DMA_CIRCULAR_MODE_DISABLE;
+    //优先级
+    init_struct.priority            = DMA_PRIORITY_LOW;
+    /**************** 这些都需要手动配置 *****************/
+    init_struct.direction           = DMA_PERIPH_TO_MEMORY;//传输方向
+    init_struct.periph_addr         = (uint32_t)(&USART_DATA(USART0));//串口外设(注意需要&)  源头
+    init_struct.periph_inc          = DMA_PERIPH_INCREASE_DISABLE;//设置地址增加(寄存器地址不能增加)
+    init_struct.memory0_addr        = (uint32_t)g_recv_buff;//内存  目标
+    init_struct.memory_inc          = DMA_MEMORY_INCREASE_ENABLE;//设置地址增加
+    init_struct.periph_memory_width = DMA_MEMORY_WIDTH_8BIT;//每一次传输长度
+    init_struct.number              = sizeof(g_recv_buff)/sizeof(g_recv_buff[0]);//传输数据个数
+    dma_single_data_mode_init(DMA1,DMA_CH2,&init_struct);//3.初始化DMA
+    dma_channel_subperipheral_select(DMA1,DMA_CH2,DMA_SUBPERI4);//4.选择外设
+    dma_channel_enable(DMA1,DMA_CH2);//5.开启DMA搬运
+    dma_flag_clear(DMA1,DMA_CH2,DMA_FLAG_FTF);//清除标志位
+    usart_dma_receive_config(USART0,USART_RECEIVE_DMA_ENABLE);
+}
+static void usart0_dma_tx_config() {
     rcu_periph_clock_enable(RCU_DMA1);
     dma_deinit(DMA1, DMA_CH7);
     dma_single_data_parameter_struct init_struct;
@@ -28,6 +55,8 @@ static void usart0_dma_config() {
     dma_single_data_mode_init(DMA1, DMA_CH7, &init_struct);
     //配置通道功能选择
     dma_channel_subperipheral_select(DMA1, DMA_CH7, DMA_SUBPERI4);
+    //串口发送功能开启
+    usart_dma_transmit_config(USART0,USART_TRANSMIT_DMA_ENABLE);
 }
 
 //发送一byte数据
@@ -88,31 +117,39 @@ void USART_config() {
     // 发送功能配置
     usart_transmit_config(USART0, USART_TRANSMIT_ENABLE);
 
-	usart_dma_transmit_config(USART0,USART_TRANSMIT_DMA_ENABLE);
     // 接收功能配置
     usart_receive_config(USART0, USART_RECEIVE_ENABLE);
     // 接收中断配置
     nvic_irq_enable(USART0_IRQn, 2, 2);
     // usart int rbne
-    usart_interrupt_enable(USART0, USART_INT_RBNE);
+//    usart_interrupt_enable(USART0, USART_INT_RBNE);
     usart_interrupt_enable(USART0, USART_INT_IDLE);
 
     // 使能串口
     usart_enable(USART0);
-    usart0_dma_config();
+    usart0_dma_tx_config();
+    usart0_dma_rx_config();
 }
 
 void USART0_IRQHandler(void) {
-    if ((usart_interrupt_flag_get(USART0, USART_INT_FLAG_RBNE)) == SET) {
-        uint16_t value = usart_data_receive(USART0);
-        g_recv_buff[g_recv_length] = (uint8_t) value;
-        g_recv_length++;
-    }
+//    if ((usart_interrupt_flag_get(USART0, USART_INT_FLAG_RBNE)) == SET) {
+//        uint16_t value = usart_data_receive(USART0);
+//        g_recv_buff[g_recv_length] = (uint8_t) value;
+//        g_recv_length++;
+//    }
     if (usart_interrupt_flag_get(USART0, USART_INT_FLAG_IDLE) == SET) {
         //读取缓冲区,清空缓冲区
         usart_data_receive(USART0);
-        g_recv_buff[g_recv_length] = '\0';
-        printf("%s\n", g_recv_buff);
-        g_recv_length = 0;
+        dma_channel_disable(DMA1,DMA_CH2);
+        uint32_t len = USART_RECEIVE_LENGTH - dma_transfer_number_get(DMA1,DMA_CH2);
+        if(len >0){
+            g_recv_buff[len] = '\0';
+            printf("g_recv_buff:%s\n", g_recv_buff);
+            printf("len:%d\n", len);
+        }
+//        dma_transfer_number_config(DMA1,DMA_CH2,USART_RECEIVE_LENGTH);
+//        dma_memory_address_config(DMA1,DMA_CH2,DMA_MEMORY_0,(uint32_t)g_recv_buff);
+        dma_flag_clear(DMA1, DMA_CH2,DMA_FLAG_FTF);//清除标记要在开启DMA之前
+        dma_channel_enable(DMA1,DMA_CH2);
     }
 }

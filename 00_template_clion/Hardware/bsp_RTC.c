@@ -63,3 +63,38 @@ void RTC_read() {
     rtc_clock.second = READ_BCD(rps.second);
     rtc_clock.week = READ_BCD(rps.day_of_week);
 }
+
+void ALARM_config() {
+    // 闹钟外部中断
+    exti_flag_clear(EXTI_17);
+    exti_init(EXTI_17,EXTI_INTERRUPT,EXTI_TRIG_RISING);
+
+    // 重置闹钟
+    rtc_alarm_disable(RTC_ALARM0);
+
+    rtc_alarm_struct ras;
+    ras.alarm_mask = RTC_ALARM_HOUR_MASK | RTC_ALARM_MINUTE_MASK | RTC_ALARM_DATE_MASK;
+    ras.weekday_or_date = RTC_ALARM_DATE_SELECTED;
+    ras.alarm_day = 0x21;
+    ras.alarm_hour = WRITE_BCD(23);
+    ras.alarm_minute = WRITE_BCD(59);
+    ras.alarm_second = WRITE_BCD(59);
+    ras.am_pm = RTC_AM;
+    rtc_alarm_config(RTC_ALARM0, &ras);
+
+    // 中断配置
+    nvic_irq_enable(RTC_Alarm_IRQn, 2, 2);
+    rtc_interrupt_enable(RTC_INT_ALARM0);
+    rtc_flag_clear(RTC_FLAG_ALRM0);
+
+    rtc_alarm_enable(RTC_ALARM0);
+}
+
+void RTC_Alarm_IRQHandler() {
+    if (SET == rtc_flag_get(RTC_FLAG_ALRM0)) {
+        // 处理RTC闹钟中断
+        printf("alarm \r\n");
+    }
+    rtc_flag_clear(RTC_FLAG_ALRM0);
+    exti_flag_clear(EXTI_17);
+}

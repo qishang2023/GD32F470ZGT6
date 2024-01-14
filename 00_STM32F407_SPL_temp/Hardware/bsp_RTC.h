@@ -7,7 +7,7 @@
 
 #include "systick.h"
 #include <stdio.h>
-#include "lcd.h"
+#include "bsp_lcd_OLED.h"
 
 // 十位取出左移4位 + 个位 (得到BCD数)
 #define WRITE_BCD(val) 	((val / 10) << 4) + (val % 10)

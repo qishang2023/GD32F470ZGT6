@@ -1,4 +1,4 @@
-#include "lcd_init.h"
+#include "bsp_lcd_OLED_init.h"
 
 void delay_ms(uint32_t ms) {
     delay_1ms(ms);

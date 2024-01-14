@@ -1,6 +1,6 @@
-#include "lcd.h"
-#include "lcd_init.h"
-#include "lcdfont.h"
+#include "bsp_lcd_OLED.h"
+#include "bsp_lcd_OLED_init.h"
+#include "bsp_lcdfont_OLED.h"
 
 void delay_ms(u32 n){
 	delay_1ms(n);

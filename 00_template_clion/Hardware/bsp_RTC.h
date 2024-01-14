@@ -7,7 +7,6 @@
 
 #include "gd32f4xx.h"
 #include <stdio.h>
-#include "lcd.h"
 
 // 十位取出左移4位 + 个位 (得到BCD数)
 #define WRITE_BCD(val) 	((val / 10) << 4) + (val % 10)

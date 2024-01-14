@@ -1,4 +1,4 @@
-#include "lcd_init.h"
+#include "bsp_lcd_OLED_init.h"
 
 void LCD_GPIO_Init(void) {
     rcu_periph_clock_enable(RCU_GPIOA);

@@ -1,7 +1,3 @@
-//
-// Created by pc on 2024/1/12.
-//
-
 #include "bsp_soft_i2c.h"
 
 
@@ -128,7 +124,6 @@ static uint8_t recv() {
 
 static void send_ack() {
     // 主机发送ACK响应
-
     // 主机获取SDA控制权，进入输出模式
     SDA_OUT();
     // 拉低SDA

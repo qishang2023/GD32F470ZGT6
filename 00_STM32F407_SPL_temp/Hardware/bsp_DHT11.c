@@ -55,14 +55,14 @@ u8 DHT11_read_data(u8* dat) {
         delay_1us(1);
     }
     if(count > 83) return 2;
-    delay_1us(5);
+    delay_1us(2);
     count = 0;
     while(DHT == SET && count < 87) {
         count++;
         delay_1us(1);
     }
     if(count > 87) return 3;
-    delay_1us(5);
+    delay_1us(2);
     // 开始接收数据
     for(i = 0; i < 5; i++) {
         for(j = 0; j < 8; j++) {
@@ -100,7 +100,7 @@ u8 DHT11_get_temperature(u8 *humidity, float *temperature) {
     while((ret = DHT11_read_data(dat)) && retry < 10) {
         retry++;
     }
-    // ret = DHT11_read_data(dat);
+//     ret = DHT11_read_data(dat);
     *humidity = dat[0];// 获得正数部分
 
     *temperature = dat[2] & 0x7F;// 获得正数部分

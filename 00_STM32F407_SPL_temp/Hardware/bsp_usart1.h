@@ -34,5 +34,5 @@ void send_data(uint8_t data);
 //发送字符串
 void send_string(char data[]);
 //3.接收之后的数据向上提供给应用层
-extern void recv_data_callback(uint8_t buffer[],int16_t length);
+extern void recv_data_callback(uint8_t buffer[],uint16_t length);
 #endif //INC_00_STM32F407_SPL_TEMP_BSP_USART1_H

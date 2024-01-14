@@ -28,8 +28,8 @@ void RTC_config() {
     RTC_DeInit();
     /* Configure the RTC data register and RTC prescaler */
     /* ck_spre(1Hz) = RTCCLK(LSI) /(AsynchPrediv + 1)*(SynchPrediv + 1)*/
-    RTC_InitStructure.RTC_AsynchPrediv = 0x7F;
-    RTC_InitStructure.RTC_SynchPrediv = 0xFF;
+    RTC_InitStructure.RTC_AsynchPrediv = 0x7F;//异步预分频器
+    RTC_InitStructure.RTC_SynchPrediv = 0xFF;//同步预分频器
     RTC_InitStructure.RTC_HourFormat = RTC_HourFormat_24;
     RTC_Init(&RTC_InitStructure);
     RTC_EnterInitMode();

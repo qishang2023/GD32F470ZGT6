@@ -158,7 +158,6 @@ static void send_nack() {
 
 uint8_t SoftI2C_write(uint8_t addr, uint8_t reg, uint8_t* data, uint32_t len) {
     start();
-
     send(addr << 1);			//发送设备写地址
     if(wait_ack()) return 1;	//等待响应
 

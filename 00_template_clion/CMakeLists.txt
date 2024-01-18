@@ -15,7 +15,7 @@ set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
 
 # project settings
 project(00_template_clion C CXX ASM)
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_C_STANDARD 11)
 
 #Uncomment for hardware floating point
@@ -49,13 +49,19 @@ else ()
     add_compile_options(-Og -g)
 endif ()
 
-include_directories(./User ./Hardware ./Drivers/GD32F4xx_standard_peripheral/Include
-        ./Drivers/CMSIS ./Drivers/CMSIS/GD/GD32F4xx/Include)
+include_directories(./User
+        ./Hardware
+        ./Drivers/GD32F4xx_standard_peripheral/Include
+        ./Drivers/CMSIS
+        ./Drivers/CMSIS/GD/GD32F4xx/Include)
 
 add_definitions(-DDEBUG -DUSE_STDPERIPH_DRIVER -DGD32F470)
 
-file(GLOB_RECURSE SOURCES "Drivers/GD32F4xx_standard_peripheral/Source/*.*" "User/*.*"
-        "Drivers/CMSIS/GD/GD32F4xx/Source/system_gd32f4xx.c" "Hardware/*.*" "startup/*.*")
+file(GLOB_RECURSE SOURCES "Drivers/GD32F4xx_standard_peripheral/Source/*.*"
+        "User/*.*"
+        "Drivers/CMSIS/GD/GD32F4xx/Source/system_gd32f4xx.c"
+        "Hardware/*.*"
+        "startup/*.*")
 
 set(LINKER_SCRIPT ${CMAKE_SOURCE_DIR}/STM32F407ZGTX_FLASH.ld)
 

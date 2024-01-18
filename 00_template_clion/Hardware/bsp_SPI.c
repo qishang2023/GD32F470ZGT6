@@ -4,6 +4,8 @@
 
 #include "bsp_SPI.h"
 
+u8 temp = 0;
+
 void bsp_dma_spi_config(void){
     dma_single_data_parameter_struct dma_init_struct;
 
@@ -20,7 +22,13 @@ void bsp_dma_spi_config(void){
     dma_init_struct.circular_mode       = DMA_CIRCULAR_MODE_DISABLE;
     dma_single_data_mode_init(DMA1, DMA_CH3, &dma_init_struct);
     dma_channel_subperipheral_select(DMA1, DMA_CH3, DMA_SUBPERI3);
+    dma_init_struct.memory0_addr        = (uint32_t)&temp;
+    dma_init_struct.direction           = DMA_PERIPH_TO_MEMORY;
+    dma_init_struct.memory_inc          = DMA_MEMORY_INCREASE_DISABLE;
+    dma_single_data_mode_init(DMA1, DMA_CH2, &dma_init_struct);
+    dma_channel_subperipheral_select(DMA1, DMA_CH2, DMA_SUBPERI3);
     spi_dma_enable(SPI0, SPI_DMA_TRANSMIT);
+    spi_dma_enable(SPI0, SPI_DMA_RECEIVE);
 }
 
 void bsp_dma_spi_send(const u8 *p,u32 len){
@@ -28,8 +36,9 @@ void bsp_dma_spi_send(const u8 *p,u32 len){
     dma_memory_address_config(DMA1, DMA_CH3,DMA_MEMORY_0, (uint32_t)p);
     dma_transfer_number_config(DMA1, DMA_CH3, len);
     dma_channel_enable(DMA1, DMA_CH3);
-//    while (RESET == dma_flag_get(DMA1, DMA_CH3,DMA_FLAG_FTF));
-//    dma_flag_clear(DMA1, DMA_CH3,DMA_FLAG_FTF);
+    dma_channel_enable(DMA1, DMA_CH2);
+    while (RESET == dma_flag_get(DMA1, DMA_CH3,DMA_FLAG_FTF));
+    dma_flag_clear(DMA1, DMA_CH3,DMA_FLAG_FTF);
 }
 
 void bsp_hard_spi_config(void){

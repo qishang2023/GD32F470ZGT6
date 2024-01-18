@@ -500,10 +500,10 @@ void LCD_ShowPicture(u16 x, u16 y, u16 length, u16 width, const u8 pic[]) {
 //        }
 //    }
     LCD_CS_Clr();
-//    bsp_dma_spi_send(pic, length * width * 2);
-    for (int l = 0; l < length * width * 2 - 1; ++l) {
-        bsp_hard_spi_write(pic[l]);
-    }
+    bsp_dma_spi_send(pic, length * width * 2);
+//    for (int l = 0; l < length * width * 2 - 1; ++l) {
+//        bsp_hard_spi_write(pic[l]);
+//    }
 ////    bsp_hard_spi_write(0x2C);
     LCD_CS_Set();
 }

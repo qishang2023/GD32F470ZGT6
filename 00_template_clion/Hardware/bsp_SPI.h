@@ -56,4 +56,7 @@ void bsp_hard_spi_write(u8 dat);
 //∂¡»°
 u8 bsp_hard_spi_read(void);
 
+void bsp_dma_spi_config(void);
+void bsp_dma_spi_send(const u8 *p,u32 len);
+
 #endif //INC_00_TEMPLATE_CLION_BSP_SPI_H

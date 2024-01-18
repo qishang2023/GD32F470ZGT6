@@ -4,6 +4,7 @@
 #include "gd32f4xx.h"
 #include "systick.h"
 #include "gd32f4xx_misc.h"
+#include "bsp_SPI.h"
 
 #define u8 uint8_t
 #define u16 uint16_t

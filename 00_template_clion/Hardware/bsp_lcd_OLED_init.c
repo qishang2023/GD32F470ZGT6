@@ -3,9 +3,15 @@
 void LCD_GPIO_Init(void) {
     rcu_periph_clock_enable(RCU_GPIOA);
     rcu_periph_clock_enable(RCU_GPIOB);
-    gpio_mode_set(GPIOB, GPIO_MODE_OUTPUT, GPIO_PUPD_PULLUP, GPIO_PIN_3 | GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_8);
+//    gpio_mode_set(GPIOB, GPIO_MODE_OUTPUT, GPIO_PUPD_PULLUP, GPIO_PIN_3 | GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_8);
+//    gpio_mode_set(GPIOA, GPIO_MODE_OUTPUT, GPIO_PUPD_PULLUP, GPIO_PIN_4 | GPIO_PIN_15);
+//    gpio_output_options_set(GPIOB, GPIO_OTYPE_PP, GPIO_OSPEED_MAX, GPIO_PIN_3 | GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_8);
+//    gpio_output_options_set(GPIOA, GPIO_OTYPE_PP, GPIO_OSPEED_MAX, GPIO_PIN_4 | GPIO_PIN_15);
+//    gpio_bit_set(GPIOB, GPIO_PIN_3 | GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_8);
+//    gpio_bit_set(GPIOA, GPIO_PIN_4 | GPIO_PIN_15);
+    gpio_mode_set(GPIOB, GPIO_MODE_OUTPUT, GPIO_PUPD_PULLUP, GPIO_PIN_4 | GPIO_PIN_8);
     gpio_mode_set(GPIOA, GPIO_MODE_OUTPUT, GPIO_PUPD_PULLUP, GPIO_PIN_4 | GPIO_PIN_15);
-    gpio_output_options_set(GPIOB, GPIO_OTYPE_PP, GPIO_OSPEED_MAX, GPIO_PIN_3 | GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_8);
+    gpio_output_options_set(GPIOB, GPIO_OTYPE_PP, GPIO_OSPEED_MAX, GPIO_PIN_4 |GPIO_PIN_8);
     gpio_output_options_set(GPIOA, GPIO_OTYPE_PP, GPIO_OSPEED_MAX, GPIO_PIN_4 | GPIO_PIN_15);
     gpio_bit_set(GPIOB, GPIO_PIN_3 | GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_8);
     gpio_bit_set(GPIOA, GPIO_PIN_4 | GPIO_PIN_15);
@@ -17,18 +23,19 @@ void LCD_GPIO_Init(void) {
 	  ∑µªÿ÷µ£∫  Œﬁ
 ******************************************************************************/
 void LCD_Writ_Bus(u8 dat) {
-    u8 i;
+//    u8 i;
     LCD_CS_Clr();
-    for (i = 0; i < 8; i++) {
-        LCD_SCLK_Clr();
-        if (dat & 0x80) {
-            LCD_MOSI_Set();
-        } else {
-            LCD_MOSI_Clr();
-        }
-        LCD_SCLK_Set();
-        dat <<= 1;
-    }
+//    for (i = 0; i < 8; i++) {
+//        LCD_SCLK_Clr();
+//        if (dat & 0x80) {
+//            LCD_MOSI_Set();
+//        } else {
+//            LCD_MOSI_Clr();
+//        }
+//        LCD_SCLK_Set();
+//        dat <<= 1;
+//    }
+    bsp_hard_spi_write(dat);
     LCD_CS_Set();
 }
 

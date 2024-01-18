@@ -4,6 +4,33 @@
 
 #include "bsp_SPI.h"
 
+void bsp_dma_spi_config(void){
+    dma_single_data_parameter_struct dma_init_struct;
+
+    /* configure SPI1 transmit DMA */
+    dma_deinit(DMA1, DMA_CH3);
+    dma_init_struct.periph_addr         = (uint32_t)&SPI_DATA(SPI0);
+    dma_init_struct.memory0_addr        = 0;
+    dma_init_struct.direction           = DMA_MEMORY_TO_PERIPH;
+    dma_init_struct.periph_memory_width = DMA_PERIPH_WIDTH_8BIT;
+    dma_init_struct.priority            = DMA_PRIORITY_LOW;
+    dma_init_struct.number              = 0;
+    dma_init_struct.periph_inc          = DMA_PERIPH_INCREASE_DISABLE;
+    dma_init_struct.memory_inc          = DMA_MEMORY_INCREASE_ENABLE;
+    dma_init_struct.circular_mode       = DMA_CIRCULAR_MODE_DISABLE;
+    dma_single_data_mode_init(DMA1, DMA_CH3, &dma_init_struct);
+    dma_channel_subperipheral_select(DMA1, DMA_CH3, DMA_SUBPERI3);
+    spi_dma_enable(SPI0, SPI_DMA_TRANSMIT);
+}
+
+void bsp_dma_spi_send(const u8 *p,u32 len){
+    dma_channel_disable(DMA1, DMA_CH3);
+    dma_memory_address_config(DMA1, DMA_CH3,DMA_MEMORY_0, (uint32_t)p);
+    dma_transfer_number_config(DMA1, DMA_CH3, len);
+    dma_channel_enable(DMA1, DMA_CH3);
+//    while (RESET == dma_flag_get(DMA1, DMA_CH3,DMA_FLAG_FTF));
+//    dma_flag_clear(DMA1, DMA_CH3,DMA_FLAG_FTF);
+}
 
 void bsp_hard_spi_config(void){
     /********************** GPIO初始化 ************************/
@@ -20,10 +47,10 @@ void bsp_hard_spi_config(void){
     gpio_af_set(SPI_MOSI_PORT,GPIO_AF_5,SPI_MOSI_PIN);
 
     //FSO(MISO):PB4
-    rcu_periph_clock_enable(SPI_MISO_RCU);
-    gpio_mode_set(SPI_MISO_PORT, GPIO_MODE_AF, GPIO_PUPD_NONE, SPI_MISO_PIN);
-    gpio_output_options_set(SPI_MISO_PORT, GPIO_OTYPE_PP, GPIO_OSPEED_MAX, SPI_MISO_PIN);
-    gpio_af_set(SPI_MISO_PORT,GPIO_AF_5,SPI_MISO_PIN);
+//    rcu_periph_clock_enable(SPI_MISO_RCU);
+//    gpio_mode_set(SPI_MISO_PORT, GPIO_MODE_AF, GPIO_PUPD_NONE, SPI_MISO_PIN);
+//    gpio_output_options_set(SPI_MISO_PORT, GPIO_OTYPE_PP, GPIO_OSPEED_MAX, SPI_MISO_PIN);
+//    gpio_af_set(SPI_MISO_PORT,GPIO_AF_5,SPI_MISO_PIN);
     //GPIO_HBits(GPIOA,GPIO_Pin_0|GPIO_Pin_1|GPIO_Pin_2|GPIO_Pin_3|GPIO_Pin_4|GPIO_Pin_5);
     //拉高所有的输出引脚
     //SPI_SCL_H();
@@ -38,9 +65,9 @@ void bsp_hard_spi_config(void){
     spi_struct_para_init(&sps);
     sps.device_mode = SPI_MASTER; //主机模式
     sps.frame_size = SPI_FRAMESIZE_8BIT;//每次发送8bit
-    sps.clock_polarity_phase = SPI_CK_PL_LOW_PH_1EDGE;//设置极性和相位 0 0
+    sps.clock_polarity_phase = SPI_CK_PL_HIGH_PH_1EDGE;//设置极性和相位 0 0
     sps.nss = SPI_NSS_SOFT;//软件片选(手动拉低和拉高片选通信)
-    sps.prescale = SPI_PSC_32;//预分频 基于APB2总线(120M)  分频之后频率:60M 30M
+    sps.prescale = SPI_PSC_16;//预分频 基于APB2总线(120M)  分频之后频率:60M 30M
     sps.endian = SPI_ENDIAN_MSB;//先发高位
     spi_init(SPI_NUM, &sps);
     //开启

@@ -107,9 +107,9 @@ void UsageFault_Handler(void)
     \param[out] none
     \retval     none
 */
-void SVC_Handler(void)
-{
-}
+//void SVC_Handler(void)
+//{
+//}
 
 /*!
     \brief    this function handles DebugMon exception
@@ -117,9 +117,9 @@ void SVC_Handler(void)
     \param[out] none
     \retval     none
 */
-void DebugMon_Handler(void)
-{
-}
+//void DebugMon_Handler(void)
+//{
+//}
 
 /*!
     \brief    this function handles PendSV exception
@@ -127,9 +127,9 @@ void DebugMon_Handler(void)
     \param[out] none
     \retval     none
 */
-void PendSV_Handler(void)
-{
-}
+//void PendSV_Handler(void)
+//{
+//}
 
 /*!
     \brief    this function handles SysTick exception
@@ -137,7 +137,9 @@ void PendSV_Handler(void)
     \param[out] none
     \retval     none
 */
+#ifndef SYS_SUPPORT_OS
 void SysTick_Handler(void)
 {
     delay_decrement();
 }
+#endif

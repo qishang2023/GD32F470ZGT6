@@ -1,63 +1,84 @@
-#include "bsp_lcd_OLED.h"
-#include "bsp_lcd_OLED_init.h"
-#include "bsp_DHT11.h"
-#include "bsp_RTC.h"
+#include "gd32f4xx.h"
+#include "systick.h"
+#include <stdio.h>
+#include "main.h"
+#include "FreeRTOS.h"
+#include "task.h"
 #include "bsp_USART.h"
-#include "bsp_key.h"
-#include "bsp_timer.h"
-#include "bsp_BUZZER.h"
-//#include "bsp_pic_OLED.h"
-#include "bsp_soft_i2c.h"
-#include "bsp_ADC.h"
-#include "bsp_hard_i2c.h"
-#include "pic.h"
 
-int main(void) {
-    u8 humidity = 0, ret = 0;
-    int j = 1;
-    float temperature = 0;
-    char str[30];
-    // 系统时钟初始化
-    systick_config();
-    RTC_config();
-//    SoftI2C_init();
-    bsp_ADC0_C16_Init();
-    USART_config();
-    bsp_hard_i2c_init();
-//    EXTI_config();
-//    bsp_timer5_init();
-    bsp_hard_spi_config();
-    LCD_Init(); // LCD初始化
-    LCD_Fill(0, 0, LCD_W, LCD_H, WHITE);
-    rtc_clock.year = 2023;
-    rtc_clock.month = 12;
-    rtc_clock.day = 21;
-    rtc_clock.week = 6;
-    rtc_clock.hour = 23;
-    rtc_clock.minute = 59;
-    rtc_clock.second = 55;
-    RTC_set_time();
-    DHT11_init();
-    uint8_t p[7] = {0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17};
-    uint8_t r = bsp_hard_I2C_write(0x51, 0x02, p, 7);
-    printf("start...\n");
-    bsp_dma_spi_config();
-    while (1) {
-//        float cpu_t = adc_temp_get();
-//        bsp_hard_I2C_read(0x51,0x02,p,7);
-//        LCD_ShowIntNum(10,220,p[0],2,BLACK,WHITE,24);
-//        sprintf(str, "CPU_T:%.1fC", cpu_t);
-//        LCD_ShowString(10, 180, (u8 *)str, BLACK, WHITE, 16, 0);
-//        RTC_read();
-//        sprintf(str, "%d-%d-%d %02d:%02d:%02d", rtc_clock.year, rtc_clock.month, rtc_clock.day,
-//                rtc_clock.hour, rtc_clock.minute, rtc_clock.second);
-//        LCD_ShowString(10, 40, (u8 *)str, BLACK, WHITE, 16, 0);
-//        ret = DHT11_get_temperature(&humidity, &temperature);
-//        sprintf(str, "H:%d%% T:%.1fC   \0", (int) humidity, temperature);
-//        LCD_ShowString(10, 100, (u8 *)str, RED, WHITE, 24, 0);
-//        sprintf(str, "ret = %d", (int) ret);
-//        LCD_ShowString(10, 70,(u8 *)str, RED, WHITE, 24, 0);
-        LCD_ShowPicture(0, 0, 240, 240, gImage_1);
-        delay_1ms(1000);
+TaskHandle_t            StartTask_Handler;
+TaskHandle_t            Task1_Handler;
+TaskHandle_t            Task2_Handler;
+
+void task1(void *pvParameters) {
+    while(1) {
+        vTaskDelay(300);
+        gpio_bit_set(GPIOE, GPIO_PIN_3);
+        vTaskDelay(300);
+        gpio_bit_reset(GPIOE, GPIO_PIN_3);
     }
+}
+
+void task2(void *pvParameters) {
+    while(1) {
+        vTaskDelay(1000);
+        gpio_bit_set(GPIOD, GPIO_PIN_7);
+        vTaskDelay(1000);
+        gpio_bit_reset(GPIOD, GPIO_PIN_7);
+    }
+}
+
+void start_task(void *pvParameters) {
+    taskENTER_CRITICAL();
+
+    xTaskCreate((TaskFunction_t)task1,
+                (const char*   )"task1",
+                50,
+                NULL,
+                2,
+                (TaskHandle_t*  )&Task1_Handler);
+    xTaskCreate((TaskFunction_t)task2,
+                (const char*   )"task2",
+                50,
+                NULL,
+                2,
+                (TaskHandle_t*  )&Task2_Handler);
+    vTaskDelete(StartTask_Handler);
+
+    taskEXIT_CRITICAL();
+}
+
+void GPIO_config() {
+    // 1. 时钟初始化
+    rcu_periph_clock_enable(RCU_GPIOE);
+    // 2. 配置GPIO 输入输出模式
+    gpio_mode_set(GPIOE, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, GPIO_PIN_3);
+    // 3. 配置GPIO 模式的操作方式
+    gpio_output_options_set(GPIOE, GPIO_OTYPE_PP, GPIO_OSPEED_MAX, GPIO_PIN_3);
+
+    // 1. 时钟初始化
+    rcu_periph_clock_enable(RCU_GPIOD);
+    // 2. 配置GPIO 输入输出模式
+    gpio_mode_set(GPIOD, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, GPIO_PIN_7);
+    // 3. 配置GPIO 模式的操作方式
+    gpio_output_options_set(GPIOD, GPIO_OTYPE_PP, GPIO_OSPEED_MAX, GPIO_PIN_7);
+}
+
+
+int main(void)
+{
+    nvic_priority_group_set(NVIC_PRIGROUP_PRE2_SUB2);
+
+    systick_config();
+    GPIO_config();
+    USART_config();
+    xTaskCreate((TaskFunction_t)start_task,
+                (const char*   )"start_task",
+                128,
+                NULL,
+                1,
+                (TaskHandle_t*  )&StartTask_Handler);
+    vTaskStartScheduler();
+
+    while(1) {}
 }

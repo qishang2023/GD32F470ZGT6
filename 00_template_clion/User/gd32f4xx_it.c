@@ -107,30 +107,33 @@ void UsageFault_Handler(void)
     \param[out] none
     \retval     none
 */
-//void SVC_Handler(void)
-//{
-//}
-
+#ifndef SYS_SUPPORT_OS
+void SVC_Handler(void)
+{
+}
+#endif
 /*!
     \brief    this function handles DebugMon exception
     \param[in]  none
     \param[out] none
     \retval     none
 */
-//void DebugMon_Handler(void)
-//{
-//}
-
+#ifndef SYS_SUPPORT_OS
+void DebugMon_Handler(void)
+{
+}
+#endif
 /*!
     \brief    this function handles PendSV exception
     \param[in]  none
     \param[out] none
     \retval     none
 */
-//void PendSV_Handler(void)
-//{
-//}
-
+#ifndef SYS_SUPPORT_OS
+void PendSV_Handler(void)
+{
+}
+#endif
 /*!
     \brief    this function handles SysTick exception
     \param[in]  none

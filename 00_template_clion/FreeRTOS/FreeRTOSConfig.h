@@ -46,26 +46,26 @@
 extern uint32_t SystemCoreClock;
 #endif
 
-#define configUSE_PREEMPTION			1
-#define configUSE_IDLE_HOOK				0
-#define configUSE_TICK_HOOK				0
-#define configCPU_CLOCK_HZ				( SystemCoreClock )
-#define configTICK_RATE_HZ				( ( TickType_t ) 1000 )
-#define configMAX_PRIORITIES			( 5 )
-#define configMINIMAL_STACK_SIZE		( ( unsigned short ) 130 )
-#define configTOTAL_HEAP_SIZE			( ( size_t ) ( 75 * 1024 ) )
-#define configMAX_TASK_NAME_LEN			( 10 )
-#define configUSE_TRACE_FACILITY		1
-#define configUSE_16_BIT_TICKS			0
-#define configIDLE_SHOULD_YIELD			1
-#define configUSE_MUTEXES				1
-#define configQUEUE_REGISTRY_SIZE		8
-#define configCHECK_FOR_STACK_OVERFLOW	0
-#define configUSE_RECURSIVE_MUTEXES		1
-#define configUSE_MALLOC_FAILED_HOOK	0
+#define configUSE_PREEMPTION			1//抢占式调度或者非抢占式调度
+#define configUSE_IDLE_HOOK				0 /* 1: 使能空闲任务钩子函数, 无默认需定义  */
+#define configUSE_TICK_HOOK				0/* 1: 使能系统时钟节拍中断钩子函数, 无默认需定义 */
+#define configCPU_CLOCK_HZ				( SystemCoreClock )//系统时钟
+#define configTICK_RATE_HZ				( ( TickType_t ) 1000 )//systick频率
+#define configMAX_PRIORITIES			( 5 )//最大优先级
+#define configMINIMAL_STACK_SIZE		( ( unsigned short ) 130 )//空闲任务栈大小
+#define configTOTAL_HEAP_SIZE			( ( size_t ) ( 75 * 1024 ) )/* FreeRTOS堆中可用的RAM总量, 单位: Byte, 无默认需定义 */
+#define configMAX_TASK_NAME_LEN			( 10 )/* 定义任务名最大字符数, 默认: 16 */
+#define configUSE_TRACE_FACILITY		1   /* 1: 使能可视化跟踪调试, 默认: 0 */
+#define configUSE_16_BIT_TICKS			0   /* 1: 定义系统时钟节拍计数器的数据类型为16位无符号数, 无默认需定义 */
+#define configIDLE_SHOULD_YIELD			1   /* 1: 使能在抢占式调度下,同优先级的任务能抢占空闲任务, 默认: 1 */
+#define configUSE_MUTEXES				1   /* 1: 使能互斥信号量, 默认: 0 */
+#define configQUEUE_REGISTRY_SIZE		8   /* 定义可以注册的信号量和消息队列的个数, 默认: 0 */
+#define configCHECK_FOR_STACK_OVERFLOW	0   /* 1: 使能栈溢出检测方法1, 2: 使能栈溢出检测方法2, 默认: 0 */
+#define configUSE_RECURSIVE_MUTEXES		1   /* 1: 使能递归互斥信号量, 默认: 0 */
+#define configUSE_MALLOC_FAILED_HOOK	0   /* 1: 使能动态内存申请失败钩子函数, 默认: 0 */
 #define configUSE_APPLICATION_TASK_TAG	0
-#define configUSE_COUNTING_SEMAPHORES	1
-#define configGENERATE_RUN_TIME_STATS	0
+#define configUSE_COUNTING_SEMAPHORES	1   /* 1: 使能计数信号量, 默认: 0 */
+#define configGENERATE_RUN_TIME_STATS	0   /* 1: 使能任务运行时间统计功能, 默认: 0 */
 
 
 /* Software timer definitions. */
@@ -115,9 +115,11 @@ header file. */
 
 /* Definitions that map the FreeRTOS port interrupt handlers to their CMSIS
 standard names. */
-#define vPortSVCHandler SVC_Handler
-#define xPortPendSVHandler PendSV_Handler
-#define xPortSysTickHandler SysTick_Handler
+#ifdef SYS_SUPPORT_OS
+    #define vPortSVCHandler SVC_Handler
+    #define xPortPendSVHandler PendSV_Handler
+    #define xPortSysTickHandler SysTick_Handler
+#endif
 
 #endif /* FREERTOS_CONFIG_H */
 

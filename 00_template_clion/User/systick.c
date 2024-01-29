@@ -90,12 +90,21 @@ void delay_decrement(void)
 
 void delay_1us(uint32_t count)
 {
-    uint32_t tick = SystemCoreClock / 1000000U;
-    while(0U != --count) {
-        while (0U != tick--) {
-            __NOP();
+    uint32_t ticks;
+    uint32_t told, tnow, reload, tcnt = 0;
+    reload = SysTick->LOAD;
+    ticks = count * (SystemCoreClock / 1000000);
+    told = SysTick->VAL;
+
+    while(1) {
+        tnow=SysTick->VAL;
+        if(tnow != told) {
+            if(tnow<told) tcnt+=told-tnow;
+            else tcnt+=reload-tnow+told;
+            told=tnow;
+
+            if(tcnt>=ticks)break;
         }
-        tick = SystemCoreClock / 1000000U;
     }
 }
 

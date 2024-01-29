@@ -5,6 +5,7 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "bsp_USART.h"
+#include "semphr.h"
 
 TaskHandle_t            StartTask_Handler;
 TaskHandle_t            Task1_Handler;
@@ -29,8 +30,7 @@ void task2(void *pvParameters) {
 }
 
 void start_task(void *pvParameters) {
-    taskENTER_CRITICAL();
-
+    taskENTER_CRITICAL();//进入临界区，关闭全局中断
     xTaskCreate((TaskFunction_t)task1,
                 (const char*   )"task1",
                 50,
@@ -45,7 +45,7 @@ void start_task(void *pvParameters) {
                 (TaskHandle_t*  )&Task2_Handler);
     vTaskDelete(StartTask_Handler);
 
-    taskEXIT_CRITICAL();
+    taskEXIT_CRITICAL();// 退出临界区，打开全局中断
 }
 
 void GPIO_config() {

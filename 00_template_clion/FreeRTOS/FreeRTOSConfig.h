@@ -51,7 +51,7 @@ extern uint32_t SystemCoreClock;
 #define configUSE_TICK_HOOK				0/* 1: 使能系统时钟节拍中断钩子函数, 无默认需定义 */
 #define configCPU_CLOCK_HZ				( SystemCoreClock )//系统时钟
 #define configTICK_RATE_HZ				( ( TickType_t ) 1000 )//systick频率
-#define configMAX_PRIORITIES			( 5 )//最大优先级
+#define configMAX_PRIORITIES			( 32 )//最大优先级
 #define configMINIMAL_STACK_SIZE		( ( unsigned short ) 130 )//空闲任务栈大小
 #define configTOTAL_HEAP_SIZE			( ( size_t ) ( 75 * 1024 ) )/* FreeRTOS堆中可用的RAM总量, 单位: Byte, 无默认需定义 */
 #define configMAX_TASK_NAME_LEN			( 10 )/* 定义任务名最大字符数, 默认: 16 */
